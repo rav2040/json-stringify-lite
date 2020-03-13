@@ -1,0 +1,42 @@
+{
+  "name": "@tuft/json-stringify",
+  "version": "1.0.0-alpha1",
+  "description": "Serialize JavaScript objects to JSON strings.",
+  "author": "Stuart Kennedy",
+  "license": "MIT",
+  "homepage": "https://github.com/tuftjs/json-stringify",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tuftjs/json-stringify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tuftjs/json-stringify/issues"
+  },
+  "keywords": [
+    "tuft",
+    "tuftjs",
+    "json",
+    "stringify"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "prebuild": "npm test",
+    "build": "rm -rf ./lib && tsc",
+    "test:azure": "jest --ci --reporters=default --reporters=jest-junit",
+    "build:azure": "rm -rf ./lib && tsc"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.0",
+    "@typescript-eslint/eslint-plugin": "^2.22.0",
+    "@typescript-eslint/parser": "^2.22.0",
+    "eslint": "^6.8.0",
+    "jest": "^25.1.0",
+    "jest-junit": "^10.0.0",
+    "ts-jest": "^25.2.1",
+    "typescript": "^3.8.3"
+  }
+}
