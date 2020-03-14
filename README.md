@@ -35,8 +35,8 @@ jsonStringify(value: any, safe?: boolean): string
 
 ## Exceptions
 
-❌ Throws an `Error` if an object contains a circular reference and 'safe' is set to `true`.  
-❌ Throws a `TypeError` if an object contains a `BigInt`.  
+* Throws an `Error` if an object contains a circular reference and 'safe' is set to `true`.  
+* Throws a `TypeError` if an object contains a `BigInt`.  
 
 ## Usage
 
