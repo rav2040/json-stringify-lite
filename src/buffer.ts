@@ -7,10 +7,9 @@
 export function stringifyBuffer(buf: Buffer): string {
   let str = '{"type":"Buffer","data":[';
   let prefix = '';
-  let value;
 
-  for (value of buf) {
-    str += prefix + value;
+  for (let i = 0; i < buf.length; i++) {
+    str += prefix + buf[i];
     prefix = ',';
   }
 
