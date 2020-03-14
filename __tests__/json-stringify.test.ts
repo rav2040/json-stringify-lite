@@ -94,13 +94,27 @@ describe('Stringifying an object with all possible values returns the same resul
   });
 });
 
+describe('Stringifying an object with a BigInt throws an error', () => {
+  test('Object', () => {
+    const obj = { foo: BigInt(42) };
+
+    expect(() => jsonStringify(obj, true)).toThrow('Cannot serialize objects that contain a BigInt');
+  });
+
+  test('Array', () => {
+    const arr = [BigInt(42)];
+
+    expect(() => jsonStringify(arr, true)).toThrow('Cannot serialize objects that contain a BigInt');
+  });
+});
+
 describe('Stringifying an object with a circular reference throws an error', () => {
   test('Object with \'safe\' argument set to true', () => {
     const obj: any = {};
 
     obj.a = obj;
 
-    expect(() => jsonStringify(obj, true)).toThrow('Cannot stringify objects with a circular reference');
+    expect(() => jsonStringify(obj, true)).toThrow('Cannot serialize objects that contain a circular reference');
   });
 
   test('Array with \'safe\' argument set to true', () => {
@@ -108,7 +122,7 @@ describe('Stringifying an object with a circular reference throws an error', () 
 
     arr[0] = arr;
 
-    expect(() => jsonStringify(arr, true)).toThrow('Cannot stringify objects with a circular reference');
+    expect(() => jsonStringify(arr, true)).toThrow('Cannot serialize objects that contain a circular reference');
   });
 
   test('Object with \'safe\' argument set to false', () => {
