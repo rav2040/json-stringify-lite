@@ -4,7 +4,7 @@ import { stringifyArray } from './array';
 
 /**
  * stringifyObject() iterates over all the key/value pairs of an object, converting them to strings one by one and then
- * concatenating them. The resulting string should match the output of JSON.stringify() with the exception that any
+ * concatenating them. The resulting string should match the output of JSON.stringify() with the exception that
  * toJSON() methods are ignored.
  */
 
@@ -17,67 +17,42 @@ export function stringifyObject(obj: any): string {
   for (key in obj) {
     value = obj[key];
 
-    if (shouldBeOmitted(value)) {
-      continue;
+    if (typeof value === 'boolean') {
+      str += prefix + key + '":' + value;
+      prefix = ',"';
     }
 
-    str += prefix + key + '":';
-
-    // Only prepend a comma to the key string after the first key has been added.
-    prefix = ',"';
-
-    if (shouldBeNull(value)) {
-      str += 'null';
+    else if (typeof value === 'number') {
+      str += prefix + key + (value === Infinity || Number.isNaN(value) ? '":null' : '":' + value);
+      prefix = ',"';
     }
 
     else if (typeof value === 'string') {
-      str += stringifyString(value);
+      str += prefix + key + '":' + stringifyString(value);
+      prefix = ',"';
     }
 
-    else if (value instanceof Date) {
-      str += '"' + value.toISOString() + '"';
-    }
-
-    else if (Buffer.isBuffer(value)) {
-      str += stringifyBuffer(value);
+    else if (value === null) {
+      str += prefix + key + '":null';
+      prefix = ',"';
     }
 
     else if (typeof value === 'object') {
-      str += Array.isArray(value)
-        ? stringifyArray(value)
-        : stringifyObject(value);
-    }
+      if (Buffer.isBuffer(value)) {
+        str += prefix + key + '":' + stringifyBuffer(value);
+      }
 
-    else {
-      str += value;
+      else if (value instanceof Date) {
+        str += prefix + key + '":"' + value.toISOString() + '"';
+      }
+
+      else {
+        str += prefix + key + '":' + (Array.isArray(value) ? stringifyArray(value) : stringifyObject(value));
+      }
+
+      prefix = ',"';
     }
   }
 
   return str + '}';
-}
-
-
-/**
- * null, Infinity, and NaN are not valid JSON and should be changed to null if present in an object.
- */
-
-function shouldBeNull(value: any): boolean {
-  return (
-    value === null ||
-    value === Infinity ||
-    (typeof value === 'number' && Number.isNaN(value))
-  );
-}
-
-
-/**
- * undefined, Functions, and Symbols are not valid JSON and should be omitted if present in an object.
- */
-
-function shouldBeOmitted(value: any): boolean {
-  return (
-    value === undefined ||
-    typeof value === 'function' ||
-    typeof value === 'symbol'
-  );
 }
