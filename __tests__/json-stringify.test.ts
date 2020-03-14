@@ -69,3 +69,19 @@ test('Stringifying an array with all possible values returns the same result as 
 
   expect(result).toEqual(expectedResult);
 });
+
+test('Stringifying an object with a circular reference throws an error', () => {
+  const obj: any = {};
+
+  obj.a = obj;
+
+  expect(() => jsonStringify(obj)).toThrow('Maximum call stack size exceeded');
+});
+
+test('Stringifying an array with a circular reference throws an error', () => {
+  const arr: any[] = [];
+
+  arr[0] = arr;
+
+  expect(() => jsonStringify(arr)).toThrow('Maximum call stack size exceeded');
+});
