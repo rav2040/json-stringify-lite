@@ -6,7 +6,7 @@
 
 A more performant version of `JSON.stringify()` for Node.js. Strings produced by this function should match the output of `JSON.stringify()` with the exception that `toJSON()` methods are completely ignored. `Buffer` and `Date` values will be transformed to represent the same output you would get from `JSON.stringify()`.
 
-**Important note:**  
+⚠ **Important note:**  
 By default a check will be made on all nested objects and arrays for circular references, and an `Error` will be thrown if one is encountered. Setting the second argument to `false` will disable this check and grant a considerable speed boost, but this should not be done unless it is certain the given object contains no circular references.
 
 ## Installation
@@ -32,6 +32,11 @@ jsonStringify(value: any, safe?: boolean): string
 #### Return value
 
 >A JSON string that represents the provided value.
+
+## Exceptions
+
+❌ Throws an `Error` if an object contains a circular reference and 'safe' is set to `true`.  
+❌ Throws a `TypeError` if an object contains a `BigInt`.  
 
 ## Usage
 
