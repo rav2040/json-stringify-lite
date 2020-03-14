@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/tuftjs/json-stringify/badge.svg)](https://coveralls.io/github/tuftjs/json-stringify)
 [![Known Vulnerabilities](https://snyk.io/test/github/tuftjs/json-stringify/badge.svg?targetFile=package.json)](https://snyk.io/test/github/tuftjs/json-stringify?targetFile=package.json)
 
-A more performant version of `JSON.stringify()` for Node.js. Strings produced by this function should match the output of `JSON.stringify()` with the exception that `toJSON()` methods are completely ignored. `Buffer` and `Date` values will be transformed to represent the same output you would get from `JSON.stringify()`.
+A more performant version of `JSON.stringify()` for Node.js. Strings produced by this function should match the output of `JSON.stringify()` with the exception that `toJSON()` methods are completely ignored. `Buffer` and `Date` values will be transformed to represent the same output you would get from `JSON.stringify()`. Unlike `JSON.stringify()`, there are no 'replacer' or 'space' parameters.
 
 ⚠ **Important note:**  
 By default a check will be made on all nested objects and arrays for circular references, and an `Error` will be thrown if one is encountered. Setting the second argument to `false` will disable this check and grant a considerable speed boost, but this should not be done unless it is certain the given object contains no circular references.
