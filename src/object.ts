@@ -1,6 +1,7 @@
 import { stringifyString } from './string';
 import { stringifyBuffer } from './buffer';
 import { stringifyArray } from './array';
+import { seenObjects } from './seen-objects';
 
 /**
  * stringifyObject() iterates over all the key/value pairs of an object, converting them to strings one by one and then
@@ -8,7 +9,7 @@ import { stringifyArray } from './array';
  * toJSON() methods are ignored.
  */
 
-export function stringifyObject(obj: any): string {
+export function stringifyObject(obj: any, safe: boolean): string {
   let str = '{';
   let prefix = '"';
   let key;
@@ -46,8 +47,30 @@ export function stringifyObject(obj: any): string {
         str += prefix + key + '":"' + value.toISOString() + '"';
       }
 
+      else if (safe) {
+        if (seenObjects.has(value)) {
+          throw Error('Cannot stringify objects with a circular reference');
+        }
+
+        try {
+          seenObjects.add(value);
+
+          str += prefix + key + '":';
+          str += Array.isArray(value)
+            ? stringifyArray(value, true)
+            : stringifyObject(value, true);
+        }
+
+        finally {
+          seenObjects.delete(value);
+        }
+      }
+
       else {
-        str += prefix + key + '":' + (Array.isArray(value) ? stringifyArray(value) : stringifyObject(value));
+        str += prefix + key + '":';
+        str += Array.isArray(value)
+          ? stringifyArray(value, false)
+          : stringifyObject(value, false);
       }
 
       prefix = ',"';
