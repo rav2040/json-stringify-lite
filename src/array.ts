@@ -44,7 +44,7 @@ export function stringifyArray(arr: any[], safe: boolean): string {
 
       else if (safe) {
         if (seenObjects.has(value)) {
-          throw Error('Cannot stringify objects with a circular reference');
+          throw Error('Cannot serialize objects that contain a circular reference');
         }
 
         try {
@@ -69,6 +69,10 @@ export function stringifyArray(arr: any[], safe: boolean): string {
       }
 
       prefix = ',';
+    }
+
+    else if (typeof value === 'bigint') {
+      throw TypeError('Cannot serialize objects that contain a BigInt');
     }
 
     else {
