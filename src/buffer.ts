@@ -10,11 +10,8 @@ export function stringifyBuffer(buf: Buffer): string {
   let value;
 
   for (value of buf) {
-    str += prefix;
-
+    str += prefix + value;
     prefix = ',';
-
-    str += value;
   }
 
   return str + ']}';
