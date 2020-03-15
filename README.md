@@ -19,7 +19,7 @@ npm i @tuft/json-stringify
   🔹 🔹 🔹
 </p>
 
-## jsonStringify()
+### jsonStringify(*value*[, *safe*])
 
 A more performant version of `JSON.stringify()`. Strings produced by this function should be comparable to the output of `JSON.stringify()` with the following exceptions:
 * There are no 'replacer' or 'space' parameters.
@@ -27,12 +27,6 @@ A more performant version of `JSON.stringify()`. Strings produced by this functi
 
 ⚠ **Important note:**  
 By default a check will be made on all nested objects and arrays for circular references, and an `Error` will be thrown if one is encountered. Setting the second argument to `false` will disable this check and grant a considerable speed boost, but this should not be done unless it is certain the given object contains no circular references.
-
-#### Syntax
-
-```ts
-jsonStringify(value: any, safe?: boolean): string
-```
 
 #### Parameters
 
@@ -48,7 +42,7 @@ jsonStringify(value: any, safe?: boolean): string
 
 #### Exceptions
 
-* Throws an `Error` if an object contains a circular reference and 'safe' is set to `true`.
+* Throws an `Error` if an object contains a circular reference and *safe* is set to `true`.
 * Throws a `TypeError` if an object contains a `BigInt`.
 
 ```js
@@ -67,15 +61,9 @@ jsonStringify(obj);  // '{"foo":42,"hello":"world"}'
   🔹 🔹 🔹
 </p>
 
-## stableJsonStringify()
+### stableJsonStringify(*value*,[ *compareFunction*[, *safe*]])
 
 A deterministic version of `jsonStringify()`. It performs the same as `jsonStringify()` with the exception that object entries are sorted before being serialized. This ensures that consistent output is produced for the same input.
-
-#### Syntax
-
-```ts
-stableJsonStringify(value: any, compareFunction?: (a: T, b: T) => number, safe?: boolean): string
-```
 
 #### Parameters
 
@@ -94,7 +82,7 @@ stableJsonStringify(value: any, compareFunction?: (a: T, b: T) => number, safe?:
 
 #### Exceptions
 
-* Throws an `Error` if an object contains a circular reference and 'safe' is set to `true`.
+* Throws an `Error` if an object contains a circular reference and *safe* is set to `true`.
 * Throws a `TypeError` if an object contains a `BigInt`.
 
 ```js
@@ -111,7 +99,7 @@ stableJsonStringify(obj);  // '{"a":"baz","b":"foo","c":"bar"}'
 
 #### Using a comparison function
 
-If a comparison function is provided, it works the same as JavaScript's `Array.prototype.sort()` method. The two arguments, 'a' and 'b', represent two successive key/value pairs in the form of `[key, value]`. A number is returned to indicate sort order as follows:
+If a comparison function is provided, it works the same as JavaScript's `Array.prototype.sort()` method. The two arguments, *a* and *b*, represent two successive key/value pairs in the form of `[key, value]`. A number is returned to indicate sort order as follows:
 * If a number less than zero is returned, *a* will precede *b*.
 * If a number greater than zero is returned, *b* will precede *a*.
 * If zero is returned, the original order will be maintained.
