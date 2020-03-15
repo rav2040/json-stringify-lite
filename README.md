@@ -23,7 +23,7 @@ npm i @tuft/json-stringify
 
 A more performant version of `JSON.stringify()`. Strings produced by this function should be comparable to the output of `JSON.stringify()` with the following exceptions:
 * There are no *replacer* or *space* parameters.
-* `toJSON()` methods are completely ignored. However, `Buffer` and `Date` values will be transformed to represent the same output you would get from `JSON.stringify()`.
+* `toJSON()` methods are completely ignored. However, `Buffer` and `Date` objects will be transformed to represent the same output you would get from `JSON.stringify()`.
 
 ⚠ **Important note:**  
 By default a check will be made on all nested objects and arrays for circular references, and an `Error` will be thrown if one is encountered. Setting the second argument to `false` will disable this check and grant a considerable speed boost, but this should not be done unless it is certain the given object contains no circular references.
