@@ -1,51 +1,50 @@
 import { jsonStringify } from '../src/index';
 
-describe('Stringifying an object with all possible values returns the same result as JSON.stringify()', () => {
+describe('Calling JSON.parse() on a stringifed object with all possible values returns the same result as JSON.stringify()', () => {
   const obj = {
     a: true,
     b: 42,
     c: 'abc',
-    d: '"abc"',
-    e: 'ab\\c',
-    f: 'abc' + String.fromCharCode(31),
-    g: Buffer.from('abc'),
-    h: undefined,
-    i: null,
-    j: Infinity,
-    k: NaN,
-    l: new Date(),
-    m: {
+    d: Buffer.from('abc'),
+    e: undefined,
+    f: null,
+    g: Infinity,
+    h: NaN,
+    i: new Date(),
+    j: '😀',
+    k: Symbol(),
+    l: () => {},
+    m: new Map(),
+    n: {
       one: 1,
       two: 2,
       three: 3,
       nestedObject: {},
       nestedArray: [],
     },
-    n: [
+    o: [
       1,
       2,
       3,
       {},
       [],
     ],
-    1: Symbol(),
-    2: () => {},
-    3: new Map(),
   };
 
   const arr = [
     true,
     42,
     'abc',
-    '"abc"',
-    'ab\\c',
-    'abc' + String.fromCharCode(31),
     Buffer.from('abc'),
     undefined,
     null,
     Infinity,
     NaN,
     new Date(),
+    '😀',
+    Symbol(),
+    () => {},
+    new Map(),
     {
       one: 1,
       two: 2,
@@ -60,35 +59,89 @@ describe('Stringifying an object with all possible values returns the same resul
       {},
       [],
     ],
-    Symbol(),
-    () => {},
-    new Map(),
   ];
 
   test('Standard object', () => {
-    const expectedResult = JSON.stringify(obj);
-    const result = jsonStringify(obj);
+    const expectedResult = JSON.parse(JSON.stringify(obj));
+    const result = JSON.parse(jsonStringify(obj));
 
     expect(result).toEqual(expectedResult);
   });
 
   test('Array', () => {
-    const expectedResult = JSON.stringify(arr);
-    const result = jsonStringify(arr);
+    const expectedResult = JSON.parse(JSON.stringify(arr));
+    const result = JSON.parse(jsonStringify(arr));
 
     expect(result).toEqual(expectedResult);
   });
 
   test('Standard object, safe set to false', () => {
+    const expectedResult = JSON.parse(JSON.stringify(obj));
+    const result = JSON.parse(jsonStringify(obj, false));
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('Array, safe set to false', () => {
+    const expectedResult = JSON.parse(JSON.stringify(arr));
+    const result = JSON.parse(jsonStringify(arr, false));
+
+    expect(result).toEqual(expectedResult);
+  });
+});
+
+describe('Stringifying an object with one string value returns the same result as JSON.stringify() when the string includes', () => {
+  test('an ASCII control character', () => {
+    const obj = { a: 'abc' + String.fromCharCode(31) };
+
     const expectedResult = JSON.stringify(obj);
     const result = jsonStringify(obj, false);
 
     expect(result).toEqual(expectedResult);
   });
 
-  test('Array, safe set to false', () => {
-    const expectedResult = JSON.stringify(arr);
-    const result = jsonStringify(arr, false);
+  test('a double quote (")', () => {
+    const obj = { a: '"abc"' };
+
+    const expectedResult = JSON.stringify(obj);
+    const result = jsonStringify(obj, false);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('a backslash (\\)', () => {
+    const obj = { a: 'ab\\c' };
+
+    const expectedResult = JSON.stringify(obj);
+    const result = jsonStringify(obj, false);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('a UTF-16 surrogate pair (0xD83D 0xDE00 😀)', () => {
+    const obj = { a: '😀' };
+
+    const expectedResult = JSON.stringify(obj);
+    const result = jsonStringify(obj, false);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('a lone leading surrogate (0xD83D)', () => {
+    const obj = { a: '\uD83D' };
+
+
+    const expectedResult = JSON.stringify(obj);
+    const result = jsonStringify(obj, false);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('a lone trailing surrogate (0xDE00)', () => {
+    const obj = { a: '\uDE00' };
+
+    const expectedResult = JSON.stringify(obj);
+    const result = jsonStringify(obj, false);
 
     expect(result).toEqual(expectedResult);
   });
