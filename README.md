@@ -5,8 +5,8 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/tuftjs/json-stringify/badge.svg?targetFile=package.json)](https://snyk.io/test/github/tuftjs/json-stringify?targetFile=package.json)
 
 A JSON library for Node.js that exports the following functions:
-* [jsonStringify()](##jsonStringify())
-* [stableJsonStringify()](##stableJsonStringify())
+* [jsonStringify()](#jsonStringify())
+* [stableJsonStringify()](#stableJsonStringify())
 
 ## Installation
 
