@@ -5,8 +5,8 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/tuftjs/json-stringify/badge.svg?targetFile=package.json)](https://snyk.io/test/github/tuftjs/json-stringify?targetFile=package.json)
 
 A JSON library for Node.js that exports the following functions:
-* [jsonStringify()](#jsonStringify())
-* [stableJsonStringify()](#stableJsonStringify())
+* [jsonStringify()](#jsonstringify)
+* [stableJsonStringify()](#stablejsonstringify)
 
 ## Installation
 
@@ -112,18 +112,19 @@ stableJsonStringify(obj);  // '{"a":"baz","b":"foo","c":"bar"}'
 #### Using a comparison function
 
 If a comparison function is provided, it works the same as JavaScript's `Array.prototype.sort()` method. The two arguments, 'a' and 'b', represent two successive key/value pairs in the form of `[key, value]`. A number is returned to indicate sort order as follows:
-* If a number less than zero is returned, `entryA` will precede `entryB`.
-* If a number greater than zero is returned, `entryB` will precede `entryA`.
+* If a number less than zero is returned, a will precede b.
+* If a number greater than zero is returned, b will precede a.
 * If zero is returned, the original order will be maintained.
 
 ```js
 const { stableJsonStringify } = require('@tuft/json-stringify');
 
+// Sorts keys in descending alphabetical order.
 function compareFunction(entryA, entryB) {
   const [keyA] = entryA;
   const [keyB] = entryB;
 
-  return keyB.localeCompare(keyA); // Sorts keys in descending alphabetical order.
+  return keyB.localeCompare(keyA);
 }
 
 const obj = {
