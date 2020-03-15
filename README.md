@@ -1,7 +1,7 @@
 # TuftJS: JSON Stringify
 
 ![Node.js CI](https://github.com/tuftjs/json-stringify/workflows/Node.js%20CI/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/tuftjs/json-stringify/badge.svg)](https://coveralls.io/github/tuftjs/json-stringify)
+[![Coverage Status](https://coveralls.io/repos/github/tuftjs/json-stringify/badge.svg?branch=master)](https://coveralls.io/github/tuftjs/json-stringify?branch=master)
 [![Known Vulnerabilities](https://snyk.io/test/github/tuftjs/json-stringify/badge.svg?targetFile=package.json)](https://snyk.io/test/github/tuftjs/json-stringify?targetFile=package.json)
 
 A JSON library for Node.js that exports the following functions:
