@@ -112,8 +112,8 @@ stableJsonStringify(obj);  // '{"a":"baz","b":"foo","c":"bar"}'
 #### Using a comparison function
 
 If a comparison function is provided, it works the same as JavaScript's `Array.prototype.sort()` method. The two arguments, 'a' and 'b', represent two successive key/value pairs in the form of `[key, value]`. A number is returned to indicate sort order as follows:
-* If a number less than zero is returned, a will precede b.
-* If a number greater than zero is returned, b will precede a.
+* If a number less than zero is returned, *a* will precede *b*.
+* If a number greater than zero is returned, *b* will precede *a*.
 * If zero is returned, the original order will be maintained.
 
 ```js
