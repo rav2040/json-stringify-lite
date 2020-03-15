@@ -6,7 +6,7 @@
 
 A JSON library for Node.js that exports the following functions:
 * [jsonStringify()](##jsonStringify())
-* [stableJsonStringify](##stableJsonStringify())
+* [stableJsonStringify()](##stableJsonStringify())
 
 ## Installation
 
