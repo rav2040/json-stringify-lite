@@ -23,9 +23,11 @@ export function jsonStringify(value: { [key: string]: any } | any[], safe = true
 
 export function stableJsonStringify(
   value: { [key: string]: any } | any[],
-  compareFn: (a: [string, any], b: [string, any]) => number = defaultCompareKeys,
+  compareFn?: ((a: [string, any], b: [string, any]) => number) | null,
   safe = true,
 ): string {
+  compareFn = compareFn ?? defaultCompareKeys;
+
   return Array.isArray(value)
     ? stableStringifyArray(value, compareFn, safe)
     : stableStringifyObject(value, compareFn, safe);
