@@ -22,7 +22,7 @@ npm i @tuft/json-stringify
 ### jsonStringify(*value*[, *safe*])
 
 A more performant version of `JSON.stringify()`. Strings produced by this function should be comparable to the output of `JSON.stringify()` with the following exceptions:
-* There are no 'replacer' or 'space' parameters.
+* There are no *replacer* or *space* parameters.
 * `toJSON()` methods are completely ignored. However, `Buffer` and `Date` values will be transformed to represent the same output you would get from `JSON.stringify()`.
 
 ⚠ **Important note:**  
