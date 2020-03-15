@@ -18,11 +18,13 @@ npm i @tuft/json-stringify
 <p align="center">
   🔹 🔹 🔹
 </p>
+</br>
 
 ### jsonStringify(*value*[, *safe*])
 
-A more performant version of `JSON.stringify()`. Strings produced by this function should be comparable to the output of `JSON.stringify()` with the following exceptions:
+A more performant version of `JSON.stringify()`. Strings produced by this function are identical (not accounting for the order of keys) to the output of `JSON.stringify()`, and it works the same with the following exceptions:
 * There are no *replacer* or *space* parameters.
+* There **is** a *safe* parameter (see below).
 * `toJSON()` methods are completely ignored. However, `Buffer` and `Date` objects will be transformed to represent the same output you would get from `JSON.stringify()`.
 
 ⚠ **Important note:**  
@@ -60,6 +62,7 @@ jsonStringify(obj);  // '{"foo":42,"hello":"world"}'
 <p align="center">
   🔹 🔹 🔹
 </p>
+</br>
 
 ### stableJsonStringify(*value*,[ *compareFunction*[, *safe*]])
 
