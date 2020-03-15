@@ -16,7 +16,7 @@ npm i @tuft/json-stringify
 
 </br>
 <p align="center">
-  🔹🔹🔹
+  🔹 🔹 🔹
 </p>
 
 ## jsonStringify()
@@ -64,7 +64,7 @@ jsonStringify(obj);  // '{"foo":42,"hello":"world"}'
 
 </br>
 <p align="center">
-  🔹🔹🔹
+  🔹 🔹 🔹
 </p>
 
 ## stableJsonStringify()
