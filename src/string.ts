@@ -9,7 +9,6 @@ for (let i = 0; i < 32; i++) {
   escapeStrings[i] = '\\u00' + i.toString(16);
 }
 
-
 // Generate UTF-16 hex values for surrogate code points by converting numbers 55,296 to 57,343 to hex values.
 for (let i = 55_296; i < 57_344; i++) {
   escapeStrings[i] = '\\u' + i.toString(16);
