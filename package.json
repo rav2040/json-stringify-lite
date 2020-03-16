@@ -1,6 +1,6 @@
 {
   "name": "@tuft/json-stringify",
-  "version": "1.0.0-alpha9",
+  "version": "1.0.0-alpha10",
   "description": "Serialize JavaScript objects to JSON strings.",
   "author": "Stuart Kennedy",
   "license": "MIT",

@@ -1,7 +1,11 @@
+import { stringifyString } from './string';
+import { stringifyBuffer } from './buffer';
 import { stringifyArray } from './array';
 import { stringifyObject } from './object';
 import { stableStringifyArray } from './array-stable';
 import { stableStringifyObject } from './object-stable';
+
+type CompareFunction = (a: [string, any], b: [string, any]) => number;
 
 /**
  * jsonStringify() converts the provided object to a JSON string and returns it. If true is passed as the second
@@ -9,10 +13,44 @@ import { stableStringifyObject } from './object-stable';
  * If false is passed then there will be no checks for circular references, which grants a considerable speed boost.
  */
 
-export function jsonStringify(value: { [key: string]: any } | any[], safe = true): string {
-  return Array.isArray(value)
-    ? stringifyArray(value, safe)
-    : stringifyObject(value, safe);
+export function jsonStringify(value: any, safe = true): string | undefined {
+  if (typeof value === 'boolean') {
+    return value.toString();
+  }
+
+  else if (typeof value === 'number') {
+    return (value === Infinity || Number.isNaN(value) ? 'null' : value.toString());
+  }
+
+  else if (typeof value === 'string') {
+    return stringifyString(value);
+  }
+
+  else if (value === null) {
+    return 'null';
+  }
+
+  else if (typeof value === 'object') {
+    if (Buffer.isBuffer(value)) {
+      return stringifyBuffer(value);
+    }
+
+    else if (value instanceof Date) {
+      return '"' + value.toISOString() + '"';
+    }
+
+    else {
+      return Array.isArray(value)
+        ? stringifyArray(value, safe)
+        : stringifyObject(value, safe);
+    }
+  }
+
+  else if (typeof value === 'bigint') {
+    throw TypeError('Cannot serialize a BigInt');
+  }
+
+  return;
 }
 
 /**
@@ -21,16 +59,46 @@ export function jsonStringify(value: { [key: string]: any } | any[], safe = true
  * keys are sorted alphabetically, but a custom compare function can be passed to control the sorting behavior.
  */
 
-export function stableJsonStringify(
-  value: { [key: string]: any } | any[],
-  compareFn?: ((a: [string, any], b: [string, any]) => number) | null,
-  safe = true,
-): string {
-  compareFn = compareFn ?? defaultCompareKeys;
+export function stableJsonStringify(value: any, compareFn?: CompareFunction | null, safe = true): string | undefined {
+  if (typeof value === 'boolean') {
+    return value.toString();
+  }
 
-  return Array.isArray(value)
-    ? stableStringifyArray(value, compareFn, safe)
-    : stableStringifyObject(value, compareFn, safe);
+  else if (typeof value === 'number') {
+    return (value === Infinity || Number.isNaN(value) ? 'null' : value.toString());
+  }
+
+  else if (typeof value === 'string') {
+    return stringifyString(value);
+  }
+
+  else if (value === null) {
+    return 'null';
+  }
+
+  else if (typeof value === 'object') {
+    if (Buffer.isBuffer(value)) {
+      return stringifyBuffer(value);
+    }
+
+    else if (value instanceof Date) {
+      return '"' + value.toISOString() + '"';
+    }
+
+    else {
+      compareFn = compareFn ?? defaultCompareKeys;
+
+      return Array.isArray(value)
+        ? stableStringifyArray(value, compareFn, safe)
+        : stableStringifyObject(value, compareFn, safe);
+    }
+  }
+
+  else if (typeof value === 'bigint') {
+    throw TypeError('Cannot serialize a BigInt');
+  }
+
+  return;
 }
 
 function defaultCompareKeys([keyA]: [string, any], [keyB]: [string, any]) {

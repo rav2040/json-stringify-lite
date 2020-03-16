@@ -1,5 +1,78 @@
 import { jsonStringify } from '../src/index';
 
+describe('Serializing a single value returns the same result as JSON.stringfy()', () => {
+  test('undefined', () => {
+    const expectedResult = JSON.stringify(undefined);
+    const result = jsonStringify(undefined);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('boolean', () => {
+    const expectedResult = JSON.stringify(true);
+    const result = jsonStringify(true);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('number', () => {
+    const expectedResult = JSON.stringify(42);
+    const result = jsonStringify(42);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('number (Infinity)', () => {
+    const expectedResult = JSON.stringify(Infinity);
+    const result = jsonStringify(Infinity);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('number (NaN)', () => {
+    const expectedResult = JSON.stringify(NaN);
+    const result = jsonStringify(NaN);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('string', () => {
+    const expectedResult = JSON.stringify('abc');
+    const result = jsonStringify('abc');
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('null', () => {
+    const expectedResult = JSON.stringify(null);
+    const result = jsonStringify(null);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('buffer', () => {
+    const buf = Buffer.from('abc');
+    const expectedResult = JSON.stringify(buf);
+    const result = jsonStringify(buf);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('date', () => {
+    const date = new Date();
+    const expectedResult = JSON.stringify(date);
+    const result = jsonStringify(date);
+
+    expect(result).toEqual(expectedResult);
+  });
+});
+
+describe('Passing a single BigInt', () => {
+  test('throws an error', () => {
+    expect(() => jsonStringify(BigInt(42))).toThrow('Cannot serialize a BigInt');
+  });
+});
+
 describe('Calling JSON.parse() on a stringifed object with all possible values returns the same result as JSON.stringify()', () => {
   const obj = {
     a: true,
@@ -62,31 +135,47 @@ describe('Calling JSON.parse() on a stringifed object with all possible values r
   ];
 
   test('Standard object', () => {
-    const expectedResult = JSON.parse(JSON.stringify(obj));
-    const result = JSON.parse(jsonStringify(obj));
+    const expectedResult = JSON.stringify(obj);
+    const result = jsonStringify(obj);
 
-    expect(result).toEqual(expectedResult);
+    expect(result).toBeDefined();
+
+    if (result !== undefined) {
+      expect(JSON.parse(result)).toEqual(JSON.parse(expectedResult));
+    }
   });
 
   test('Array', () => {
-    const expectedResult = JSON.parse(JSON.stringify(arr));
-    const result = JSON.parse(jsonStringify(arr));
+    const expectedResult = JSON.stringify(arr);
+    const result = jsonStringify(arr);
 
-    expect(result).toEqual(expectedResult);
+    expect(result).toBeDefined();
+
+    if (result !== undefined) {
+      expect(JSON.parse(result)).toEqual(JSON.parse(expectedResult));
+    }
   });
 
   test('Standard object, safe set to false', () => {
-    const expectedResult = JSON.parse(JSON.stringify(obj));
-    const result = JSON.parse(jsonStringify(obj, false));
+    const expectedResult = JSON.stringify(obj);
+    const result = jsonStringify(obj, false);
 
-    expect(result).toEqual(expectedResult);
+    expect(result).toBeDefined();
+
+    if (result !== undefined) {
+      expect(JSON.parse(result)).toEqual(JSON.parse(expectedResult));
+    }
   });
 
   test('Array, safe set to false', () => {
-    const expectedResult = JSON.parse(JSON.stringify(arr));
-    const result = JSON.parse(jsonStringify(arr, false));
+    const expectedResult = JSON.stringify(arr);
+    const result = jsonStringify(arr, false);
 
-    expect(result).toEqual(expectedResult);
+    expect(result).toBeDefined();
+
+    if (result !== undefined) {
+      expect(JSON.parse(result)).toEqual(JSON.parse(expectedResult));
+    }
   });
 });
 

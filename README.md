@@ -66,7 +66,7 @@ jsonStringify(obj);  // '{"foo":42,"hello":"world"}'
 
 ### stableJsonStringify(*value*,[ *compareFunction*[, *safe*]])
 
-A deterministic version of `jsonStringify()`. It performs the same as `jsonStringify()` with the exception that object entries are sorted before being serialized. This ensures that consistent output is produced for the same input.
+A deterministic version of `jsonStringify()`. It performs the same as `jsonStringify()` with the exception that object entries are sorted before being serialized. This ensures that consistent output is produced for the same input, at the cost of reduced performance.
 
 #### Parameters
 
