@@ -1,15 +1,14 @@
-import { stringifyString } from './string';
-import { stringifyBuffer } from './buffer';
-import { stringifyObject } from './object';
+import { serializeString } from './string';
+import { serializeBuffer } from './buffer';
+import { serializeObject } from './object';
 import { seenObjects } from './seen-objects';
 
 /**
- * stringifyArray() iterates over all the elements of an array, converting them to strings one by one and then
- * concatenating them. The resulting string should match the output of JSON.stringify() with the exception that
- * toJSON() methods are ignored.
+ * Iterates over all the elements of an array, converting them to strings one by one and then concatenating them. The
+ * resulting string should match the output of JSON.stringify() with the exception that toJSON() methods are ignored.
  */
 
-export function stringifyArray(arr: any[], safe: boolean): string {
+export function serializeArray(arr: any[], safe: boolean): string {
   let str = '[';
   let prefix = '';
   let i;
@@ -18,8 +17,8 @@ export function stringifyArray(arr: any[], safe: boolean): string {
   for (i = 0; i < arr.length; i++) {
     value = arr[i];
 
-    if (typeof value === 'boolean') {
-      str += prefix + value;
+    if (typeof value === 'string') {
+      str += prefix + serializeString(value);
       prefix = ',';
     }
 
@@ -28,14 +27,15 @@ export function stringifyArray(arr: any[], safe: boolean): string {
       prefix = ',';
     }
 
-    else if (typeof value === 'string') {
-      str += prefix + stringifyString(value);
+
+    else if (typeof value === 'boolean') {
+      str += prefix + value;
       prefix = ',';
     }
 
-    else if (value !== null && typeof value === 'object') {
+    else if (typeof value === 'object' && value !== null) {
       if (Buffer.isBuffer(value)) {
-        str += prefix + stringifyBuffer(value);
+        str += prefix + serializeBuffer(value);
       }
 
       else if (value instanceof Date) {
@@ -52,8 +52,8 @@ export function stringifyArray(arr: any[], safe: boolean): string {
 
           str += prefix;
           str += Array.isArray(value)
-            ? stringifyArray(value, true)
-            : stringifyObject(value, true);
+            ? serializeArray(value, true)
+            : serializeObject(value, true);
         }
 
         finally {
@@ -64,8 +64,8 @@ export function stringifyArray(arr: any[], safe: boolean): string {
       else {
         str += prefix;
         str += Array.isArray(value)
-          ? stringifyArray(value, false)
-          : stringifyObject(value, false);
+          ? serializeArray(value, false)
+          : serializeObject(value, false);
       }
 
       prefix = ',';

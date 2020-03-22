@@ -1,18 +1,17 @@
-import { stringifyString } from './string';
-import { stringifyBuffer } from './buffer';
-import { stableStringifyArray } from './array-stable';
+import { serializeString } from './string';
+import { serializeBuffer } from './buffer';
+import { stableSerializeArray } from './array-stable';
 import { seenObjects } from './seen-objects';
 
 /**
- * stableStringifyObject() performs the same as stringifyObject(), except that object entries are sorted using the
- * provided compare function before being serialized. Also, recursive calls to stringifyObject() and stringifyArray()
- * are replaced with calls to stableStringifyObject() and stableStringifyArray() respectively.
+ * Performs the same function as stringifyObject(), except that object entries are sorted using the
+ * provided comparison function before being serialized.
  */
 
-export function stableStringifyObject(
+export function stableSerializeObject(
   obj: any,
   compareFn: (a: [string, any], b: [string, any]) => number,
-  safe: boolean
+  safe: boolean,
 ): string {
   const entries = Object.entries(obj).sort(compareFn);
 
@@ -25,7 +24,12 @@ export function stableStringifyObject(
   for (i = 0; i < entries.length; i++) {
     [key, value] = entries[i];
 
-    if (typeof value === 'boolean') {
+    if (typeof value === 'string') {
+      str += prefix + key + '":' + serializeString(value);
+      prefix = ',"';
+    }
+
+    else if (typeof value === 'boolean') {
       str += prefix + key + '":' + value;
       prefix = ',"';
     }
@@ -35,19 +39,14 @@ export function stableStringifyObject(
       prefix = ',"';
     }
 
-    else if (typeof value === 'string') {
-      str += prefix + key + '":' + stringifyString(value);
-      prefix = ',"';
-    }
-
-    else if (value === null) {
-      str += prefix + key + '":null';
-      prefix = ',"';
-    }
-
     else if (typeof value === 'object') {
-      if (Buffer.isBuffer(value)) {
-        str += prefix + key + '":' + stringifyBuffer(value);
+      if (value === null) {
+        str += prefix + key + '":null';
+        prefix = ',"';
+      }
+
+      else if (Buffer.isBuffer(value)) {
+        str += prefix + key + '":' + serializeBuffer(value);
       }
 
       else if (value instanceof Date) {
@@ -64,8 +63,8 @@ export function stableStringifyObject(
 
           str += prefix + key + '":';
           str += Array.isArray(value)
-            ? stableStringifyArray(value, compareFn, true)
-            : stableStringifyObject(value, compareFn, true);
+            ? stableSerializeArray(value, compareFn, true)
+            : stableSerializeObject(value, compareFn, true);
         }
 
         finally {
@@ -76,8 +75,8 @@ export function stableStringifyObject(
       else {
         str += prefix + key + '":';
         str += Array.isArray(value)
-          ? stableStringifyArray(value, compareFn, false)
-          : stableStringifyObject(value, compareFn, false);
+          ? stableSerializeArray(value, compareFn, false)
+          : stableSerializeObject(value, compareFn, false);
       }
 
       prefix = ',"';

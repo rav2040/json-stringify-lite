@@ -1,15 +1,14 @@
-import { stringifyString } from './string';
-import { stringifyBuffer } from './buffer';
-import { stableStringifyObject } from './object-stable';
+import { serializeString } from './string';
+import { serializeBuffer } from './buffer';
+import { stableSerializeObject } from './object-stable';
 import { seenObjects } from './seen-objects';
 
 /**
- * stableStringifyArray() performs the same as stringifyArray() with the single exception that recursive calls to
- * stringifyObject() and stringifyArray() are replaced with calls to stableStringifyObject() and stableStringifyArray()
- * respectively.
+ * Performs the same as stringifyArray() with the single exception that recursive calls to stringifyObject() and
+ * stringifyArray() are replaced with calls to stableStringifyObject() and stableStringifyArray() respectively.
  */
 
-export function stableStringifyArray(
+export function stableSerializeArray(
   arr: any[],
   compareFn: (a: [string, any], b: [string, any]) => number,
   safe: boolean,
@@ -22,8 +21,8 @@ export function stableStringifyArray(
   for (i = 0; i < arr.length; i++) {
     value = arr[i];
 
-    if (typeof value === 'boolean') {
-      str += prefix + value;
+    if (typeof value === 'string') {
+      str += prefix + serializeString(value);
       prefix = ',';
     }
 
@@ -32,14 +31,15 @@ export function stableStringifyArray(
       prefix = ',';
     }
 
-    else if (typeof value === 'string') {
-      str += prefix + stringifyString(value);
+    else if (typeof value === 'boolean') {
+      str += prefix + value;
       prefix = ',';
     }
 
-    else if (value !== null && typeof value === 'object') {
+
+    else if (typeof value === 'object' && value !== null) {
       if (Buffer.isBuffer(value)) {
-        str += prefix + stringifyBuffer(value);
+        str += prefix + serializeBuffer(value);
       }
 
       else if (value instanceof Date) {
@@ -56,8 +56,8 @@ export function stableStringifyArray(
 
           str += prefix;
           str += Array.isArray(value)
-            ? stableStringifyArray(value, compareFn, true)
-            : stableStringifyObject(value, compareFn, true);
+            ? stableSerializeArray(value, compareFn, true)
+            : stableSerializeObject(value, compareFn, true);
         }
 
         finally {
@@ -68,8 +68,8 @@ export function stableStringifyArray(
       else {
         str += prefix;
         str += Array.isArray(value)
-          ? stableStringifyArray(value, compareFn, false)
-          : stableStringifyObject(value, compareFn, false);
+          ? stableSerializeArray(value, compareFn, false)
+          : stableSerializeObject(value, compareFn, false);
       }
 
       prefix = ',';

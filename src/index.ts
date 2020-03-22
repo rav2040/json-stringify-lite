@@ -1,9 +1,9 @@
-import { stringifyString } from './string';
-import { stringifyBuffer } from './buffer';
-import { stringifyArray } from './array';
-import { stringifyObject } from './object';
-import { stableStringifyArray } from './array-stable';
-import { stableStringifyObject } from './object-stable';
+import { serializeString } from './string';
+import { serializeBuffer } from './buffer';
+import { serializeArray } from './array';
+import { serializeObject } from './object';
+import { stableSerializeArray } from './array-stable';
+import { stableSerializeObject } from './object-stable';
 
 type CompareFunction = (a: [string, any], b: [string, any]) => number;
 
@@ -23,7 +23,7 @@ export function jsonStringify(value: any, safe = true): string | undefined {
   }
 
   else if (typeof value === 'string') {
-    return stringifyString(value);
+    return serializeString(value);
   }
 
   else if (value === null) {
@@ -32,7 +32,7 @@ export function jsonStringify(value: any, safe = true): string | undefined {
 
   else if (typeof value === 'object') {
     if (Buffer.isBuffer(value)) {
-      return stringifyBuffer(value);
+      return serializeBuffer(value);
     }
 
     else if (value instanceof Date) {
@@ -41,8 +41,8 @@ export function jsonStringify(value: any, safe = true): string | undefined {
 
     else {
       return Array.isArray(value)
-        ? stringifyArray(value, safe)
-        : stringifyObject(value, safe);
+        ? serializeArray(value, safe)
+        : serializeObject(value, safe);
     }
   }
 
@@ -69,7 +69,7 @@ export function stableJsonStringify(value: any, compareFn?: CompareFunction | nu
   }
 
   else if (typeof value === 'string') {
-    return stringifyString(value);
+    return serializeString(value);
   }
 
   else if (value === null) {
@@ -78,7 +78,7 @@ export function stableJsonStringify(value: any, compareFn?: CompareFunction | nu
 
   else if (typeof value === 'object') {
     if (Buffer.isBuffer(value)) {
-      return stringifyBuffer(value);
+      return serializeBuffer(value);
     }
 
     else if (value instanceof Date) {
@@ -89,8 +89,8 @@ export function stableJsonStringify(value: any, compareFn?: CompareFunction | nu
       compareFn = compareFn ?? defaultCompareKeys;
 
       return Array.isArray(value)
-        ? stableStringifyArray(value, compareFn, safe)
-        : stableStringifyObject(value, compareFn, safe);
+        ? stableSerializeArray(value, compareFn, safe)
+        : stableSerializeObject(value, compareFn, safe);
     }
   }
 

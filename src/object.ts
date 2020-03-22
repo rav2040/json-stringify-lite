@@ -1,15 +1,15 @@
-import { stringifyString } from './string';
-import { stringifyBuffer } from './buffer';
-import { stringifyArray } from './array';
+import { serializeString } from './string';
+import { serializeBuffer } from './buffer';
+import { serializeArray } from './array';
 import { seenObjects } from './seen-objects';
 
 /**
- * stringifyObject() iterates over all the key/value pairs of an object, converting them to strings one by one and then
- * concatenating them. The resulting string should match the output of JSON.stringify() with the exception that
- * toJSON() methods are ignored.
+ * Iterates over all the key/value pairs of an object, converting them to strings one by one and then concatenating
+ * them. The resulting string should match the output of JSON.stringify(), with the exception that toJSON() methods are
+ * ignored.
  */
 
-export function stringifyObject(obj: any, safe: boolean): string {
+export function serializeObject(obj: any, safe: boolean): string {
   let str = '{';
   let prefix = '"';
   let key;
@@ -18,8 +18,8 @@ export function stringifyObject(obj: any, safe: boolean): string {
   for (key in obj) {
     value = obj[key];
 
-    if (typeof value === 'boolean') {
-      str += prefix + key + '":' + value;
+    if (typeof value === 'string') {
+      str += prefix + key + '":' + serializeString(value);
       prefix = ',"';
     }
 
@@ -28,19 +28,19 @@ export function stringifyObject(obj: any, safe: boolean): string {
       prefix = ',"';
     }
 
-    else if (typeof value === 'string') {
-      str += prefix + key + '":' + stringifyString(value);
-      prefix = ',"';
-    }
-
-    else if (value === null) {
-      str += prefix + key + '":null';
+    else if (typeof value === 'boolean') {
+      str += prefix + key + '":' + value;
       prefix = ',"';
     }
 
     else if (typeof value === 'object') {
-      if (Buffer.isBuffer(value)) {
-        str += prefix + key + '":' + stringifyBuffer(value);
+      if (value === null) {
+        str += prefix + key + '":null';
+        prefix = ',"';
+      }
+
+      else if (Buffer.isBuffer(value)) {
+        str += prefix + key + '":' + serializeBuffer(value);
       }
 
       else if (value instanceof Date) {
@@ -57,8 +57,8 @@ export function stringifyObject(obj: any, safe: boolean): string {
 
           str += prefix + key + '":';
           str += Array.isArray(value)
-            ? stringifyArray(value, true)
-            : stringifyObject(value, true);
+            ? serializeArray(value, true)
+            : serializeObject(value, true);
         }
 
         finally {
@@ -69,8 +69,8 @@ export function stringifyObject(obj: any, safe: boolean): string {
       else {
         str += prefix + key + '":';
         str += Array.isArray(value)
-          ? stringifyArray(value, false)
-          : stringifyObject(value, false);
+          ? serializeArray(value, false)
+          : serializeObject(value, false);
       }
 
       prefix = ',"';
