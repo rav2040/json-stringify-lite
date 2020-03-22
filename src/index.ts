@@ -86,7 +86,7 @@ export function stableJsonStringify(value: any, compareFn?: CompareFunction | nu
     }
 
     else {
-      compareFn = compareFn ?? defaultCompareKeys;
+      compareFn = typeof compareFn === 'function' ? compareFn : defaultCompareKeys;
 
       return Array.isArray(value)
         ? stableSerializeArray(value, compareFn, safe)
@@ -101,6 +101,6 @@ export function stableJsonStringify(value: any, compareFn?: CompareFunction | nu
   return;
 }
 
-function defaultCompareKeys([keyA]: [string, any], [keyB]: [string, any]) {
-  return keyA.localeCompare(keyB);
+function defaultCompareKeys([keyA]: string[], [keyB]: string[]) {
+  return keyA > keyB ? 1 : -1;
 }
