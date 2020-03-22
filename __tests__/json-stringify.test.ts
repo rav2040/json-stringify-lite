@@ -1,79 +1,64 @@
 import { jsonStringify } from '../src/index';
 
-describe('Serializing a single value returns the same result as JSON.stringfy()', () => {
-  test('undefined', () => {
-    const expectedResult = JSON.stringify(undefined);
-    const result = jsonStringify(undefined);
-
-    expect(result).toEqual(expectedResult);
+describe('Serializing', () => {
+  test('undefined returns undefined', () => {
+    const output = jsonStringify(undefined);
+    expect(output).toEqual(undefined);
   });
 
-  test('boolean', () => {
-    const expectedResult = JSON.stringify(true);
-    const result = jsonStringify(true);
-
-    expect(result).toEqual(expectedResult);
+  test('null returns \'null\'', () => {
+    const output = jsonStringify(null);
+    expect(output).toEqual('null');
   });
 
-  test('number', () => {
-    const expectedResult = JSON.stringify(42);
-    const result = jsonStringify(42);
-
-    expect(result).toEqual(expectedResult);
+  test('true (boolean) returns \'true\'', () => {
+    const output = jsonStringify(true);
+    expect(output).toEqual('true');
   });
 
-  test('number (Infinity)', () => {
-    const expectedResult = JSON.stringify(Infinity);
-    const result = jsonStringify(Infinity);
-
-    expect(result).toEqual(expectedResult);
+  test('42 (number) returns \'42\'', () => {
+    const output = jsonStringify(42);
+    expect(output).toEqual('42');
   });
 
-  test('number (NaN)', () => {
-    const expectedResult = JSON.stringify(NaN);
-    const result = jsonStringify(NaN);
-
-    expect(result).toEqual(expectedResult);
+  test('Infinity (number) returns \'null\'', () => {
+    const output = jsonStringify(Infinity);
+    expect(output).toEqual('null');
   });
 
-  test('string', () => {
-    const expectedResult = JSON.stringify('abc');
-    const result = jsonStringify('abc');
-
-    expect(result).toEqual(expectedResult);
+  test('NaN (number) returns \'null\'', () => {
+    const output = jsonStringify(NaN);
+    expect(output).toEqual('null');
   });
 
-  test('null', () => {
-    const expectedResult = JSON.stringify(null);
-    const result = jsonStringify(null);
-
-    expect(result).toEqual(expectedResult);
+  test('abc (string) returns "abc"', () => {
+    const output = jsonStringify('abc');
+    expect(output).toEqual('"abc"');
   });
 
-  test('buffer', () => {
-    const buf = Buffer.from('abc');
-    const expectedResult = JSON.stringify(buf);
-    const result = jsonStringify(buf);
-
-    expect(result).toEqual(expectedResult);
+  test('a buffer returns the same output as JSON.stringify()', () => {
+    const value = Buffer.from('abc');
+    const expectedOutput = JSON.stringify(value);
+    const output = jsonStringify(value);
+    expect(output).toEqual(expectedOutput);
   });
 
-  test('date', () => {
-    const date = new Date();
-    const expectedResult = JSON.stringify(date);
-    const result = jsonStringify(date);
-
-    expect(result).toEqual(expectedResult);
+  test('a date returns the same output as JSON.stringify()', () => {
+    const value = new Date();
+    const expectedOutput = JSON.stringify(value);
+    const output = jsonStringify(value);
+    expect(output).toEqual(expectedOutput);
   });
 });
 
 describe('Passing a single BigInt', () => {
   test('throws an error', () => {
-    expect(() => jsonStringify(BigInt(42))).toThrow('Cannot serialize a BigInt');
+    const value = BigInt(42);
+    expect(() => jsonStringify(value)).toThrow('Cannot serialize a BigInt');
   });
 });
 
-describe('Calling JSON.parse() on a stringifed object with all possible values returns the same result as JSON.stringify()', () => {
+describe('Output that can be parsed with JSON.parse() is returned when serializing', () => {
   const obj = {
     a: true,
     b: 42,
@@ -84,23 +69,24 @@ describe('Calling JSON.parse() on a stringifed object with all possible values r
     g: Infinity,
     h: NaN,
     i: new Date(),
-    j: '😀',
     k: Symbol(),
     l: () => {},
     m: new Map(),
     n: {
-      one: 1,
-      two: 2,
-      three: 3,
-      nestedObject: {},
-      nestedArray: [],
+      nestedObject: {
+        a: true,
+      },
+      nestedArray: [
+        true,
+      ],
     },
     o: [
-      1,
-      2,
-      3,
-      {},
-      [],
+      {
+        a: true,
+      },
+      [
+        true,
+      ],
     ],
   };
 
@@ -114,144 +100,103 @@ describe('Calling JSON.parse() on a stringifed object with all possible values r
     Infinity,
     NaN,
     new Date(),
-    '😀',
     Symbol(),
     () => {},
     new Map(),
     {
-      one: 1,
-      two: 2,
-      three: 3,
-      nestedObject: {},
-      nestedArray: [],
+      nestedObject: {
+        a: true,
+      },
+      nestedArray: [
+        true,
+      ],
     },
     [
-      1,
-      2,
-      3,
-      {},
-      [],
+      {
+        a: true,
+      },
+      [
+        true,
+      ],
     ],
   ];
 
-  test('Standard object', () => {
-    const expectedResult = JSON.stringify(obj);
-    const result = jsonStringify(obj);
-
-    expect(result).toBeDefined();
-
-    if (result !== undefined) {
-      expect(JSON.parse(result)).toEqual(JSON.parse(expectedResult));
-    }
+  test('an object', () => {
+    const output = jsonStringify(obj);
+    expect(output).toBeDefined();
+    expect(() => JSON.parse(output!)).not.toThrowError();
   });
 
-  test('Array', () => {
-    const expectedResult = JSON.stringify(arr);
-    const result = jsonStringify(arr);
-
-    expect(result).toBeDefined();
-
-    if (result !== undefined) {
-      expect(JSON.parse(result)).toEqual(JSON.parse(expectedResult));
-    }
+  test('an array', () => {
+    const output = jsonStringify(arr);
+    expect(output).toBeDefined();
+    expect(() => JSON.parse(output!)).not.toThrowError();
   });
 
-  test('Standard object, safe set to false', () => {
-    const expectedResult = JSON.stringify(obj);
-    const result = jsonStringify(obj, false);
-
-    expect(result).toBeDefined();
-
-    if (result !== undefined) {
-      expect(JSON.parse(result)).toEqual(JSON.parse(expectedResult));
-    }
+  test('an object with \'safe\' argument set to false', () => {
+    const output = jsonStringify(obj, false);
+    expect(output).toBeDefined();
+    expect(() => JSON.parse(output!)).not.toThrowError();
   });
 
-  test('Array, safe set to false', () => {
-    const expectedResult = JSON.stringify(arr);
-    const result = jsonStringify(arr, false);
-
-    expect(result).toBeDefined();
-
-    if (result !== undefined) {
-      expect(JSON.parse(result)).toEqual(JSON.parse(expectedResult));
-    }
+  test('an array with \'safe\' argument set to false', () => {
+    const output = jsonStringify(arr, false);
+    expect(output).toBeDefined();
+    expect(() => JSON.parse(output!)).not.toThrowError();
   });
 });
 
-describe('Stringifying an object with one string value returns the same result as JSON.stringify() when the string includes', () => {
-  test('a double quote (")', () => {
-    const obj = { a: '"abc"' };
-
-    const expectedResult = JSON.stringify(obj);
-    const result = jsonStringify(obj, false);
-
-    expect(result).toEqual(expectedResult);
-  });
-
+describe('Serializing a string value with an escape character returns the correct output', () => {
   test('a backslash (\\)', () => {
-    const obj = { a: 'ab\\c' };
-
-    const expectedResult = JSON.stringify(obj);
-    const result = jsonStringify(obj, false);
-
-    expect(result).toEqual(expectedResult);
+    const output = jsonStringify('ab\\c');
+    expect(output).toEqual('"ab\\\\c"');
   });
 
-  test('an emoji', () => {
-    const obj = { a: '😀' };
+  test('a double quote (")', () => {
+    const output = jsonStringify('"abc"');
+    expect(output).toEqual('"\\"abc\\""');
+  });
 
-    const expectedResult = JSON.stringify(obj);
-    const result = jsonStringify(obj, false);
-
-    expect(result).toEqual(expectedResult);
+  test('a backslash (\\) and a double quote (")', () => {
+    const output = jsonStringify('"ab\\c"');
+    expect(output).toEqual('"\\"ab\\\\c\\""');
   });
 });
 
-describe('Stringifying an object with a BigInt throws an error', () => {
-  test('Object', () => {
-    const obj = { foo: BigInt(42) };
-
-    expect(() => jsonStringify(obj, true)).toThrow('Cannot serialize objects that contain a BigInt');
+describe('An error is thrown when serializing a BigInt inside', () => {
+  test('an object', () => {
+    const value = { foo: BigInt(42) };
+    expect(() => jsonStringify(value)).toThrow('Cannot serialize objects that contain a BigInt');
   });
 
-  test('Array', () => {
-    const arr = [BigInt(42)];
-
-    expect(() => jsonStringify(arr, true)).toThrow('Cannot serialize objects that contain a BigInt');
+  test('an array', () => {
+    const value = [BigInt(42)];
+    expect(() => jsonStringify(value)).toThrow('Cannot serialize objects that contain a BigInt');
   });
 });
 
-describe('Stringifying an object with a circular reference throws an error', () => {
-  test('Object with \'safe\' argument set to true', () => {
-    const obj: any = {};
-
-    obj.a = obj;
-
-    expect(() => jsonStringify(obj, true)).toThrow('Cannot serialize objects that contain a circular reference');
+describe('Serializing an object with a circular reference throws an error', () => {
+  test('object with \'safe\' argument set to true', () => {
+    const value: any = {};
+    value.a = value;
+    expect(() => jsonStringify(value, true)).toThrow('Cannot serialize objects that contain a circular reference');
   });
 
-  test('Array with \'safe\' argument set to true', () => {
-    const arr: any[] = [];
-
-    arr[0] = arr;
-
-    expect(() => jsonStringify(arr, true)).toThrow('Cannot serialize objects that contain a circular reference');
+  test('array with \'safe\' argument set to true', () => {
+    const value: any[] = [];
+    value[0] = value;
+    expect(() => jsonStringify(value, true)).toThrow('Cannot serialize objects that contain a circular reference');
   });
 
-  test('Object with \'safe\' argument set to false', () => {
-    const obj: any = {};
-
-    obj.a = obj;
-
-    expect(() => jsonStringify(obj, false)).toThrow('Maximum call stack size exceeded');
+  test('object with \'safe\' argument set to false', () => {
+    const value: any = {};
+    value.a = value;
+    expect(() => jsonStringify(value, false)).toThrow('Maximum call stack size exceeded');
   });
 
-  test('Array with \'safe\' argument set to false', () => {
-    const arr: any[] = [];
-
-    arr[0] = arr;
-
-    expect(() => jsonStringify(arr, false)).toThrow('Maximum call stack size exceeded');
+  test('array with \'safe\' argument set to false', () => {
+    const value: any[] = [];
+    value[0] = value;
+    expect(() => jsonStringify(value, false)).toThrow('Maximum call stack size exceeded');
   });
 });
