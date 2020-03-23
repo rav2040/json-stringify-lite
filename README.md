@@ -118,7 +118,7 @@ const { stableJsonStringify } = require('@tuft/json-stringify');
 
 // Sorts keys in descending alphabetical order.
 function compareFunction(keyA, keyB) {
-  return a < b ? 1 : -1;
+  return keyA < keyB ? 1 : -1;
 }
 
 const obj = {
