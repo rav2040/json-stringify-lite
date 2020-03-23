@@ -3,16 +3,14 @@ import { serializeBuffer } from './buffer';
 import { stableSerializeObject } from './object-stable';
 import { seenObjects } from './seen-objects';
 
+type CompareFunction = (a: string, b: string) => number;
+
 /**
  * Performs the same as stringifyArray() with the single exception that recursive calls to stringifyObject() and
  * stringifyArray() are replaced with calls to stableStringifyObject() and stableStringifyArray() respectively.
  */
 
-export function stableSerializeArray(
-  arr: any[],
-  compareFn: (a: [string, any], b: [string, any]) => number,
-  safe: boolean,
-): string {
+export function stableSerializeArray(arr: any[], compareFn: CompareFunction, safe: boolean): string {
   let str = '[';
   let prefix = '';
   let i;
@@ -20,30 +18,15 @@ export function stableSerializeArray(
 
   for (i = 0; i < arr.length; i++) {
     value = arr[i];
+    str += prefix;
 
-    if (typeof value === 'string') {
-      str += prefix + serializeString(value);
-      prefix = ',';
-    }
-
-    else if (typeof value === 'number') {
-      str += prefix + (value === Infinity || Number.isNaN(value) ? 'null' : value);
-      prefix = ',';
-    }
-
-    else if (typeof value === 'boolean') {
-      str += prefix + value;
-      prefix = ',';
-    }
-
-
-    else if (typeof value === 'object' && value !== null) {
-      if (Buffer.isBuffer(value)) {
-        str += prefix + serializeBuffer(value);
+    if (typeof value === 'object' && value !== null) {
+      if (value instanceof Date) {
+        str += '"' + value.toISOString() + '"';
       }
 
-      else if (value instanceof Date) {
-        str += prefix + '"' + value.toISOString() + '"';
+      else if (Buffer.isBuffer(value)) {
+        str += serializeBuffer(value);
       }
 
       else if (safe) {
@@ -54,7 +37,6 @@ export function stableSerializeArray(
         try {
           seenObjects.add(value);
 
-          str += prefix;
           str += Array.isArray(value)
             ? stableSerializeArray(value, compareFn, true)
             : stableSerializeObject(value, compareFn, true);
@@ -66,13 +48,24 @@ export function stableSerializeArray(
       }
 
       else {
-        str += prefix;
         str += Array.isArray(value)
           ? stableSerializeArray(value, compareFn, false)
           : stableSerializeObject(value, compareFn, false);
       }
+    }
 
-      prefix = ',';
+    else if (typeof value === 'string') {
+      str += serializeString(value);
+    }
+
+    else if (typeof value === 'number') {
+      str += value === Infinity || Number.isNaN(value)
+        ? 'null'
+        : value;
+    }
+
+    else if (typeof value === 'boolean') {
+      str += value;
     }
 
     else if (typeof value === 'bigint') {
@@ -80,9 +73,10 @@ export function stableSerializeArray(
     }
 
     else {
-      str += prefix + 'null';
-      prefix = ',';
+      str += 'null';
     }
+
+    prefix = ',';
   }
 
   return str + ']';
