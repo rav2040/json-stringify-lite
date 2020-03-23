@@ -192,7 +192,7 @@ describe('Property names are correctly sorted when serializing an object', () =>
   });
 
   test('with a custom compare function', () => {
-    const compareFn = ([a]: [string, any], [b]: [string, any]) => b.localeCompare(a);
+    const compareFn = (a: string, b: string) => b.localeCompare(a);
     const expectedOutput = '{"c":1,"b":3,"a":2}';
     const output = stableJsonStringify({ c: 1, a: 2, b: 3 }, compareFn);
     expect(output).toEqual(expectedOutput);
