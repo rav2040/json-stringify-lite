@@ -9,7 +9,7 @@ import { seenObjects } from './seen-objects';
  * ignored.
  */
 
-export function serializeObject(obj: any, safe: boolean): string {
+export function serializeObject(obj: { [key: string]: any }, safe: boolean): string {
   let str = '{';
   let prefix = '"';
   let key;
@@ -18,33 +18,19 @@ export function serializeObject(obj: any, safe: boolean): string {
   for (key in obj) {
     value = obj[key];
 
-    if (typeof value === 'string') {
-      str += prefix + key + '":' + serializeString(value);
-      prefix = ',"';
-    }
+    if (typeof value === 'object') {
+      str += prefix + key;
 
-    else if (typeof value === 'number') {
-      str += prefix + key + (value === Infinity || Number.isNaN(value) ? '":null' : '":' + value);
-      prefix = ',"';
-    }
-
-    else if (typeof value === 'boolean') {
-      str += prefix + key + '":' + value;
-      prefix = ',"';
-    }
-
-    else if (typeof value === 'object') {
       if (value === null) {
-        str += prefix + key + '":null';
-        prefix = ',"';
-      }
-
-      else if (Buffer.isBuffer(value)) {
-        str += prefix + key + '":' + serializeBuffer(value);
+        str += '":null';
       }
 
       else if (value instanceof Date) {
-        str += prefix + key + '":"' + value.toISOString() + '"';
+        str += '":"' + value.toISOString() + '"';
+      }
+
+      else if (Buffer.isBuffer(value)) {
+        str += '":' + serializeBuffer(value);
       }
 
       else if (safe) {
@@ -55,7 +41,7 @@ export function serializeObject(obj: any, safe: boolean): string {
         try {
           seenObjects.add(value);
 
-          str += prefix + key + '":';
+          str += '":';
           str += Array.isArray(value)
             ? serializeArray(value, true)
             : serializeObject(value, true);
@@ -67,12 +53,30 @@ export function serializeObject(obj: any, safe: boolean): string {
       }
 
       else {
-        str += prefix + key + '":';
+        str += '":';
         str += Array.isArray(value)
           ? serializeArray(value, false)
           : serializeObject(value, false);
       }
 
+      prefix = ',"';
+    }
+
+    else if (typeof value === 'string') {
+      str += prefix + key + '":' + serializeString(value);
+      prefix = ',"';
+    }
+
+    else if (typeof value === 'number') {
+      str += prefix + key;
+      str += value === Infinity || Number.isNaN(value)
+        ? '":null'
+        : ('":' + value);
+      prefix = ',"';
+    }
+
+    else if (typeof value === 'boolean') {
+      str += prefix + key + '":' + value;
       prefix = ',"';
     }
 

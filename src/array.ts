@@ -16,30 +16,15 @@ export function serializeArray(arr: any[], safe: boolean): string {
 
   for (i = 0; i < arr.length; i++) {
     value = arr[i];
+    str += prefix;
 
-    if (typeof value === 'string') {
-      str += prefix + serializeString(value);
-      prefix = ',';
-    }
-
-    else if (typeof value === 'number') {
-      str += prefix + (value === Infinity || Number.isNaN(value) ? 'null' : value);
-      prefix = ',';
-    }
-
-
-    else if (typeof value === 'boolean') {
-      str += prefix + value;
-      prefix = ',';
-    }
-
-    else if (typeof value === 'object' && value !== null) {
-      if (Buffer.isBuffer(value)) {
-        str += prefix + serializeBuffer(value);
+    if (typeof value === 'object' && value !== null) {
+      if (value instanceof Date) {
+        str += '"' + value.toISOString() + '"';
       }
 
-      else if (value instanceof Date) {
-        str += prefix + '"' + value.toISOString() + '"';
+      else if (Buffer.isBuffer(value)) {
+        str += serializeBuffer(value);
       }
 
       else if (safe) {
@@ -50,7 +35,6 @@ export function serializeArray(arr: any[], safe: boolean): string {
         try {
           seenObjects.add(value);
 
-          str += prefix;
           str += Array.isArray(value)
             ? serializeArray(value, true)
             : serializeObject(value, true);
@@ -62,13 +46,24 @@ export function serializeArray(arr: any[], safe: boolean): string {
       }
 
       else {
-        str += prefix;
         str += Array.isArray(value)
           ? serializeArray(value, false)
           : serializeObject(value, false);
       }
+    }
 
-      prefix = ',';
+    else if (typeof value === 'string') {
+      str += serializeString(value);
+    }
+
+    else if (typeof value === 'number') {
+      str += value === Infinity || Number.isNaN(value)
+        ? 'null'
+        : value;
+    }
+
+    else if (typeof value === 'boolean') {
+      str += value;
     }
 
     else if (typeof value === 'bigint') {
@@ -76,9 +71,10 @@ export function serializeArray(arr: any[], safe: boolean): string {
     }
 
     else {
-      str += prefix + 'null';
-      prefix = ',';
+      str += 'null';
     }
+
+    prefix = ',';
   }
 
   return str + ']';
