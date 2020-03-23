@@ -108,20 +108,17 @@ stableJsonStringify(obj);  // '{"a":"baz","b":"foo","c":"bar"}'
 
 #### Using a comparison function
 
-If a comparison function is provided, it works the same as JavaScript's `Array.prototype.sort()` method. The two arguments, *a* and *b*, represent two successive key/value pairs in the form of `[key, value]`. A number is returned to indicate sort order as follows:
-* If a number less than zero is returned, *a* will precede *b*.
-* If a number greater than zero is returned, *b* will precede *a*.
-* If zero is returned, the original order will be maintained.
+If a comparison function is provided, it works the same as JavaScript's `Array.prototype.sort()` method. The two arguments, *a* and *b*, represent two successive object keys. A number is returned to indicate sort order as follows:
+* If a number less than `0` is returned, *a* will precede *b*.
+* If a number greater than `0` is returned, *b* will precede *a*.
+* If `0` is returned, the original order will be maintained.
 
 ```js
 const { stableJsonStringify } = require('@tuft/json-stringify');
 
 // Sorts keys in descending alphabetical order.
-function compareFunction(entryA, entryB) {
-  const [keyA] = entryA;
-  const [keyB] = entryB;
-
-  return keyB.localeCompare(keyA);
+function compareFunction(keyA, keyB) {
+  return a < b ? 1 : -1;
 }
 
 const obj = {
