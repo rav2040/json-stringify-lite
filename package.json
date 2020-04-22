@@ -1,16 +1,16 @@
 {
-  "name": "@tuft/json-stringify",
-  "version": "1.0.0-alpha.13",
+  "name": "json-stringify",
+  "version": "1.0.0-alpha.14",
   "description": "Serialize JavaScript objects to JSON strings.",
   "author": "Stuart Kennedy",
   "license": "MIT",
-  "homepage": "https://github.com/tuftjs/json-stringify",
+  "homepage": "https://github.com/rav2040/json-stringify",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tuftjs/json-stringify.git"
+    "url": "git+https://github.com/rav2040/json-stringify.git"
   },
   "bugs": {
-    "url": "https://github.com/tuftjs/json-stringify/issues"
+    "url": "https://github.com/rav2040/json-stringify/issues"
   },
   "keywords": [
     "tuft",

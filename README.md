@@ -1,4 +1,4 @@
-# TuftJS: JSON Stringify
+# JSON Stringify
 
 ![Node.js CI](https://github.com/tuftjs/json-stringify/workflows/Node.js%20CI/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/tuftjs/json-stringify/badge.svg?branch=master)](https://coveralls.io/github/tuftjs/json-stringify?branch=master)
