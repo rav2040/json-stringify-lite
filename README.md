@@ -22,7 +22,7 @@ By default, a check will be made on all nested objects and arrays for circular r
 ## Installation
 
 ```bash
-npm i @tuft/json-stringify
+npm install json-stringify-lite
 ```
 
 ## API
