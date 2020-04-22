@@ -1,22 +1,21 @@
 {
-  "name": "json-stringify",
-  "version": "1.0.0-alpha.14",
+  "name": "json-stringify-lite",
+  "version": "1.0.0",
   "description": "Serialize JavaScript objects to JSON strings.",
   "author": "Stuart Kennedy",
   "license": "MIT",
-  "homepage": "https://github.com/rav2040/json-stringify",
+  "homepage": "https://github.com/rav2040/json-stringify-lite",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rav2040/json-stringify.git"
+    "url": "git+https://github.com/rav2040/json-stringify-lite.git"
   },
   "bugs": {
-    "url": "https://github.com/rav2040/json-stringify/issues"
+    "url": "https://github.com/rav2040/json-stringify-lite/issues"
   },
   "keywords": [
-    "tuft",
-    "tuftjs",
     "json",
-    "stringify"
+    "stringify",
+    "lite"
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -24,19 +23,16 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "prebuild": "npm test",
-    "build": "rm -rf ./lib && tsc",
-    "test:azure": "jest --ci --reporters=default --reporters=jest-junit",
-    "build:azure": "rm -rf ./lib && tsc"
+    "build": "rm -rf ./lib && tsc"
   },
   "devDependencies": {
-    "@types/jest": "^25.1.4",
-    "@types/node": "^13.9.3",
-    "@typescript-eslint/eslint-plugin": "^2.24.0",
-    "@typescript-eslint/parser": "^2.24.0",
+    "@types/jest": "^25.2.1",
+    "@types/node": "^13.13.2",
+    "@typescript-eslint/eslint-plugin": "^2.29.0",
+    "@typescript-eslint/parser": "^2.29.0",
     "eslint": "^6.8.0",
-    "jest": "^25.1.0",
-    "jest-junit": "^10.0.0",
-    "ts-jest": "^25.2.1",
+    "jest": "^25.4.0",
+    "ts-jest": "^25.4.0",
     "typescript": "^3.8.3"
   }
 }
