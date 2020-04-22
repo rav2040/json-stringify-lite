@@ -1,6 +1,6 @@
 {
   "name": "json-stringify-lite",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Serialize JavaScript objects to JSON strings.",
   "author": "Stuart Kennedy",
   "license": "MIT",

@@ -60,7 +60,7 @@ Converts a JavaScript object or value to a JSON string. The following are valid 
 * Throws a `TypeError` if an object contains a `BigInt`.
 
 ```js
-const { jsonStringify } = require('@tuft/json-stringify');
+const { jsonStringify } = require('json-stringify-lite');
 
 const obj = {
   foo: 42,
@@ -95,7 +95,7 @@ A deterministic version of `jsonStringify()`. It performs the same, with the exc
 * Throws a `TypeError` if an object contains a `BigInt`.
 
 ```js
-const { stableJsonStringify } = require('@tuft/json-stringify');
+const { stableJsonStringify } = require('json-stringify-lite');
 
 const obj = {
   b: 'foo',
@@ -114,7 +114,7 @@ If a comparison function is provided, it works the same as JavaScript's `Array.p
 * If `0` is returned, the original order will be maintained.
 
 ```js
-const { stableJsonStringify } = require('@tuft/json-stringify');
+const { stableJsonStringify } = require('json-stringify-lite');
 
 // Sorts keys in descending alphabetical order.
 function compareFunction(keyA, keyB) {
